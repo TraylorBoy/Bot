@@ -2,7 +2,7 @@
 
 from bot import Bot
 
-class Core:
+class BotBoy:
   def __init__(self, name, tasks):
     # Creates new bot
     self.bot = Bot(name, tasks)

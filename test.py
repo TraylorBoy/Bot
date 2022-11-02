@@ -1,9 +1,9 @@
 """Tests the core module"""
 
-from core import Core
+from botboy import BotBoy
 from bot import Bot
 
-bot = Core('Adder', lambda x, y: x + y)
+bot = BotBoy('Adder', lambda x, y: x + y)
 
 def test_display_information():
   global bot
