@@ -1,6 +1,7 @@
-"""Bot application"""
+"""Multithreading & processing worker that executes functions and prints the
+result"""
 
-from bot import Bot
+from core.bot import Bot
 
 class BotBoy:
   def __init__(self, name, tasks):

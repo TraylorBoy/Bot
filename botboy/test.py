@@ -1,7 +1,6 @@
 """Tests the core module"""
 
 from botboy import BotBoy
-from bot import Bot
 
 bot = BotBoy('Adder', lambda x, y: x + y)
 
