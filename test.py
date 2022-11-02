@@ -15,6 +15,8 @@ def test_execute():
   bot.execute(3, 4)
   bot.set_processing()
   bot.execute(5, 6)
+  bot.set_on_file()
+  bot.execute(7, 8)
 
 if __name__ == '__main__':
   test_display_information()

@@ -37,6 +37,18 @@ result
 
 > Retrieved result from Adder: 7
 
+### Store result in file *result.txt*
+
+`bot.set_on_file() # Can be turned back to off by running same method`
+
+`bot.execute(7, 8)`
+
+> Adder is executing task: <function <lambda> at 0x10a1e2040>
+
+> Retrieved result from Adder: 15
+
+> Storing result in file: result.txt
+
 ## Test
 
 Runs the tests on the core module
