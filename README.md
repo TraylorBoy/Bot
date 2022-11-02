@@ -4,6 +4,7 @@ result
 
 ## Installation
 `pip install botboy`
+
 ## Usage
 ### Create a new BotBoy object with a pre-defined function object and a name
 
