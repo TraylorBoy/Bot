@@ -28,7 +28,15 @@ def test_pause():
   bot.execute(1, 2)
   bot.execute(3, 4)
 
+def test_get_result():
+  global bot
+  bot.set_wait()
+  bot.execute(1, 2)
+
+  if bot.get_result(): print(bot.get_result())
+
 if __name__ == '__main__':
   test_display_information()
   test_execute()
   test_pause()
+  test_get_result()
