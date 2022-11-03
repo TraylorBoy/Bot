@@ -49,8 +49,24 @@ result
 
 > Storing result in file: result.txt
 
+### Pause execution for threads and wait for result
+
+`bot.set_wait() # Can be turned back to off by running same method`
+
+`bot.execute(100, 10000)`
+
+> Waiting for <function <lambda> at 0x109f023b0> to finish
+
+> Adder is executing task: <function <lambda> at 0x109f023b0>
+
+> Retrieved result from Adder: 10100
+
 ## Test
 
-Runs the tests on the core module
+Runs the tests on the BotBoy module
 
 `make test`
+
+or
+
+`python3 test`

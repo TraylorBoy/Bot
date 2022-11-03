@@ -1,5 +1,5 @@
 """Multithreading & processing worker that executes functions and prints the result"""
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 import threading
 import multiprocessing
@@ -11,6 +11,9 @@ class BotBoy:
     self.result = None
     self.processing = False
     self.on_file = False
+    self.wait = False
+    self.process = None
+    self.thread = None
 
   def get_name(self):
     """Displays assigned name"""
@@ -36,13 +39,25 @@ class BotBoy:
 
   def run_task_on_thread(self, *args):
     """Executes the task on a separate thread"""
-    thread = threading.Thread(target=self.bot_task, name=self.name, args=args)
-    thread.run()
+    if self.thread: return
+
+    self.thread = threading.Thread(target=self.bot_task, name=self.name, args=args)
+
+    if self.wait:
+      print(f'Waiting for {self.task} to finish')
+      self.thread.run()
+    else:
+      self.thread.start()
+
+    self.thread = None
 
   def run_task_on_process(self, *args):
     """Executes the task on a separate process"""
-    process = multiprocessing.Process(target=self.bot_task, name=self.name, args=args)
-    process.run()
+    if self.process: return
+
+    self.process = multiprocessing.Process(target=self.bot_task, name=self.name, args=args)
+    self.process.run()
+    self.process = None
 
   def display_information(self):
     """Displays the bot's name and task"""
@@ -58,6 +73,11 @@ class BotBoy:
     """Store result in file or not"""
     if self.on_file: self.on_file = False
     else: self.on_file = True
+
+  def set_wait(self):
+    """Waits for result or not"""
+    if self.wait: self.wait = False
+    else: self.wait = True
 
   def execute(self, *args):
     """Runs the assigned task"""
