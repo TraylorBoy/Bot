@@ -61,6 +61,22 @@ result
 
 > Retrieved result from Adder: 10100
 
+### Get result manually
+
+`bot.set_wait()`
+
+`bot.execute(1, 2)`
+
+`if bot.get_result(): print(bot.get_result())`
+
+> Waiting for <function <lambda> at 0x10592e3b0> to finish
+
+> Adder is executing task: <function <lambda> at 0x10592e3b0>
+
+> Retrieved result from Adder: 3
+
+> 3
+
 ## Test
 
 Runs the tests on the BotBoy module
