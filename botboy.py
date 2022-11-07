@@ -1,5 +1,5 @@
 """Multithreading & processing worker that executes functions and prints the result"""
-__version__ = '1.3.0'
+__version__ = '1.4.0'
 
 import threading
 import multiprocessing
@@ -87,3 +87,7 @@ class BotBoy:
   def get_result(self):
     """Returns result from task execution"""
     return self.result
+
+  def set_task(self, task):
+    """Sets new task to run"""
+    self.task = task
