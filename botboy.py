@@ -1,93 +1,130 @@
 """Multithreading & processing worker that executes functions and prints the result"""
-__version__ = '1.4.0'
+__version__ = '2.0.0'
 
 import threading
 import multiprocessing
 
 class BotBoy:
-  def __init__(self, name, task):
-    self.name = name
-    self.task = task
-    self.result = None
-    self.processing = False
-    self.on_file = False
-    self.wait = False
-    self.process = None
-    self.thread = None
+  def __init__(self, name=None, task=None, silent=True):
+    self._name = name
+    self._task = task
+    self._silent = silent
+    self._result = None
+    self._process = None
+    self._thread = None
 
-  def get_name(self):
-    """Displays assigned name"""
-    print(self.name)
+  @property
+  def name(self):
+    """Name getter"""
+    return self._name
 
-  def get_task(self):
-    """Displays current tasks"""
-    print(self.task)
+  @name.setter
+  def name(self,name):
+    """Name setter"""
+    self._name = name
 
-  def bot_task(self, *args):
-    """Adds logging to the task"""
-    print(f'{self.name} is executing task: {self.task}')
+  @property
+  def task(self):
+    """Task getter"""
+    return self._task
 
+  @task.setter
+  def task(self, task):
+    """Task setter"""
+    self._task = task
+
+  @property
+  def silent(self):
+    """Silent getter"""
+    return self._silent
+
+  @silent.setter
+  def silent(self, is_silent):
+    """Silent setter"""
+    self._silent = is_silent
+
+  @property
+  def result(self):
+    """Result getter"""
+    return self._result
+
+  @result.setter
+  def result(self, result):
+    """Result setter"""
+    self._result = result
+
+  @property
+  def process(self):
+    """Process getter"""
+    return self._process
+
+  @process.setter
+  def process(self, process):
+    """Process setter"""
+    self._process = process
+
+  @property
+  def thread(self):
+    """Thread getter"""
+    return self._thread
+
+  @thread.setter
+  def thread(self, thread):
+    """Thread setter"""
+    self._thread = thread
+
+  def info(self):
+    """Displays the bot's name and task"""
+    print(f'Name: {self.name}\nTask: {self.task}\nResult: {self.result}\nProcess: {self.process}\nThread: {self.thread}')
+
+  def __str__(self):
+    """Returns a string representation of the bot"""
+    return self.info()
+
+  def _wrapper(self, *args):
+    """Task wrapper"""
+    self.log(f'{self.name} is executing task: {self.task}')
     self.result = self.task(*args)
+    self.log(f'Retrieved result from {self.name}: {self.result}')
 
-    print(f'Retrieved result from {self.name}: {self.result}')
+  def execute(self, *args, wait=False, process=False):
+    """Runs the assigned task
 
-    if self.on_file:
-      print('Storing result in file: result.txt')
+    wait (Boolean) - Pause execution until task is finished running
+    process (Boolean) - Run task on a separate process instead of default thread
+    file (Dictionary) - Stores result in file (provided name or path)
+    """
+    if process:
+      self.process = multiprocessing.Process(target=self._wrapper, name=self.name, args=args)
+      self.log(f'Running {self.task} on separate process: {self.process}')
+      self.process.run()
+      self.process = None
+    else:
+      self.thread = threading.Thread(target=self._wrapper, name=self.name, args=args)
+      self.run_thread(wait)
 
-      with open('result.txt', 'w') as f:
-        f.write(f'{self.result}')
+  def run_thread(self, wait):
+    """Executes the task on a separate thread
 
-  def run_task_on_thread(self, *args):
-    """Executes the task on a separate thread"""
-    if self.thread: return
-
-    self.thread = threading.Thread(target=self.bot_task, name=self.name, args=args)
-
-    if self.wait:
-      print(f'Waiting for {self.task} to finish')
+    wait (Boolean) - Pause execution until task is finished running
+    """
+    if wait:
+      self.log(f'Waiting for {self.task} to finish')
       self.thread.run()
     else:
       self.thread.start()
-
     self.thread = None
 
-  def run_task_on_process(self, *args):
-    """Executes the task on a separate process"""
-    if self.process: return
+  def save(self, filename):
+    """Save the result in a file
 
-    self.process = multiprocessing.Process(target=self.bot_task, name=self.name, args=args)
-    self.process.run()
-    self.process = None
+    filename (String) - The name of the file or the path to store the result in
+    """
+    self.log(f'Storing result at {filename}')
 
-  def display_information(self):
-    """Displays the bot's name and task"""
-    self.get_name()
-    self.get_task()
+    with open(filename, 'w') as f:
+      f.write(f'{self.result}')
 
-  def set_processing(self):
-    """Changes from threading to processing"""
-    if self.processing: self.processing = False
-    else: self.processing = True
-
-  def set_on_file(self):
-    """Store result in file or not"""
-    if self.on_file: self.on_file = False
-    else: self.on_file = True
-
-  def set_wait(self):
-    """Waits for result or not"""
-    if self.wait: self.wait = False
-    else: self.wait = True
-
-  def execute(self, *args):
-    """Runs the assigned task"""
-    if not self.processing: self.run_task_on_thread(*args)
-    else: self.run_task_on_process(*args)
-
-  def get_result(self):
-    """Returns result from task execution"""
-    return self.result
-
-  def set_task(self, task):
-    """Sets new task to run"""
-    self.task = task
+  def log(self, msg):
+    """Logs a message to output"""
+    if not self.silent: print(msg)

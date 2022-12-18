@@ -2,33 +2,39 @@
 Multithreading &amp; processing worker that executes functions and prints the
 result
 
+**Version 2 Release**
+
 ## Installation
 ```
 pip install botboy
 ```
 
 ## Usage
-### Create a new BotBoy object with a pre-defined function object and a name
+### Create a new BotBoy object with a pre-defined function object and a name.
+Optional silent property to display log messages **(default is True)**
 
 ```
 from botboy import BotBoy
 
-bot = BotBoy('Adder', lambda x, y: x + y)
+bot = BotBoy('Adder', lambda x, y: x + y, silent=False)
+
+# Or
+# Getter and setter
+bot = BotBoy()
+bot.name = 'Adder'
+bot.task = lambda x, y: x + y
 ```
 
 ### Display the information
 
 ```
-bot.display_information()
+bot.info()
 
-> Adder
-> <function <lambda> at 0x10e6e8040>
-```
-
-### Set new task to run
-
-```
-bot.set_task(lambda x, y: x - y)
+> Name: Adder
+> Task: <function <lambda> at 0x109a860e0>
+> Result: None
+> Process: None
+> Thread: None
 ```
 
 ### Execute function object on separate thread
@@ -40,54 +46,47 @@ bot.execute(1, 2)
 > Retrieved result from Adder: 3
 ```
 
+### Wait for result
+```
+bot.execute(10, 20, wait=True)
+
+> Waiting for <function <lambda> at 0x109a860e0> to finish
+> Adder is executing task: <function <lambda> at 0x109a860e0>
+> Retrieved result from Adder: 30
+```
+
 ### Execute function object on separate process
 
 ```
-bot.set_processing() # Can be turned back to thread by running same method
+# Cannot wait on process
+bot.execute(30, 40, process=True)
 
-bot.execute(3, 4)
-
-> Adder is executing task: <function <lambda> at 0x10e6e8040>
-> Retrieved result from Adder: 7
+> Running <function <lambda> at 0x109a860e0> on separate process: <Process name='Adder' parent=47604 initial>
+> Adder is executing task: <function <lambda> at 0x109a860e0>
+> Retrieved result from Adder: 70
 ```
 
-### Store result in file *result.txt*
-
+### Can retrieve result after execution
 ```
-bot.set_on_file() # Can be turned back to off by running same method
+# Returns the result retrieved from function
+print(bot.result)
 
-bot.execute(7, 8)
-
-> Adder is executing task: <function <lambda> at 0x10a1e2040>
-> Retrieved result from Adder: 15
-> Storing result in file: result.txt
+> 70
 ```
 
-### Pause execution for threads and wait for result
+### Store result in a file or provide a path
 
 ```
-bot.set_wait() # Can be turned back to off by running same method
+# Store result in a file at current directory
+bot.save('test.txt')
 
-bot.execute(100, 10000)
+> Storing result at test.txt
 
-> Waiting for <function <lambda> at 0x109f023b0> to finish
-> Adder is executing task: <function <lambda> at 0x109f023b0>
-> Retrieved result from Adder: 10100
-```
+import os
+# Store result at path
+bot.save(os.getcwd() + '/test2.txt')
 
-### Get result manually
-
-```
-bot.set_wait()
-
-bot.execute(1, 2)
-
-if bot.get_result(): print(bot.get_result())
-
-> Waiting for <function <lambda> at 0x10592e3b0> to finish
-> Adder is executing task: <function <lambda> at 0x10592e3b0>
-> Retrieved result from Adder: 3
-> 3
+> Storing result at /Users/traylorboy/Desktop/TraylorTheBoy/TraylorDev/python_apps/BotBoy/test2.txt
 ```
 
 ## Test
