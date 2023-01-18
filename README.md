@@ -2,7 +2,7 @@
 Multithreading &amp; processing worker that executes functions and prints the
 result
 
-**Version 2 Release**
+**Version 3 Release**
 
 ## Installation
 ```
@@ -10,68 +10,57 @@ pip install botboy
 ```
 
 ## Usage
-### Create a new BotBoy object with a pre-defined function object and a name.
-Optional silent property to display log messages **(default is True)**
-
+### Instantiation
 ```
 from botboy import BotBoy
 
-bot = BotBoy('Adder', lambda x, y: x + y, silent=False)
+name = 'Adder' # Name of thread/process
+task = lambda x, y: x + y # Function to run on separate thread/process
+params = [1, 2] # Task arguments
+verbose = True # Logging
 
-# Or
-# Getter and setter
+bot = BotBoy(name=name, task=task, params=params, verbose=verbose)
+
+# You may also instantiate with the setup() method
+name = 'Subtracter'
+task = lambda x, y: x - y
+params = [2, 3]
+
 bot = BotBoy()
-bot.name = 'Adder'
-bot.task = lambda x, y: x + y
-```
+bot.setup(name=name, task=task, params=params)
 
-### Display the information
+# Print params
+print(bot)
 
-```
-bot.info()
+# Turn logging on
+bot.verbose()
 
-> Name: Adder
-> Task: <function <lambda> at 0x109a860e0>
-> Result: None
-> Process: None
-> Thread: None
-```
-
-### Execute function object on separate thread
+# Turn logging off
+bot.silent()
 
 ```
-bot.execute(1, 2)
 
-> Adder is executing task: <function <lambda> at 0x10e6e8040>
-> Retrieved result from Adder: 3
-```
-
-### Wait for result
-```
-bot.execute(10, 20, wait=True)
-
-> Waiting for <function <lambda> at 0x109a860e0> to finish
-> Adder is executing task: <function <lambda> at 0x109a860e0>
-> Retrieved result from Adder: 30
-```
-
-### Execute function object on separate process
+### Execute task
 
 ```
-# Cannot wait on process
-bot.execute(30, 40, process=True)
+result = bot.execute()
 
-> Running <function <lambda> at 0x109a860e0> on separate process: <Process name='Adder' parent=47604 initial>
-> Adder is executing task: <function <lambda> at 0x109a860e0>
-> Retrieved result from Adder: 70
+# Wait for execution to finish
+result = bot.execute(wait=True)
+
+# Execute on separate process
+result = bot.execute(is_process=True) # Wait does not work for process
 ```
 
-### Can retrieve result after execution
+### Getters
 ```
-# Returns the result retrieved from function
-print(bot.result)
+print(bot.name())
+print(bot.task())
+print(bot.params())
+print(bot.result()) # Result will be None unless task was executed
 
-> 70
+# Or print all params together
+print(bot)
 ```
 
 ### Store result in a file or provide a path
@@ -80,25 +69,35 @@ print(bot.result)
 # Store result in a file at current directory
 bot.save('test.txt')
 
-> Storing result at test.txt
-
-import os
 # Store result at path
+import os
 bot.save(os.getcwd() + '/test2.txt')
+```
 
-> Storing result at /Users/traylorboy/Desktop/TraylorTheBoy/TraylorDev/python_apps/BotBoy/test2.txt
+### Run multiple tasks with Sequencer
+```
+from botboy import BotBoy, Sequencer
+
+tasks = [lambda x, y: x + y, lambda x, y: x - y, lambda x, y: x * y]
+params = [[1, 2], [3, 4], [5, 6]]
+
+# Create list of BotBoys
+bots = Sequencer.pack(tasks=tasks, params=params, verbose=True)
+
+# Instantiate
+seq = Sequencer(bots)
+
+# Retrieve results
+results = seq()
 ```
 
 ## Test
 
-Runs the tests on the BotBoy module
+Runs the tests on the BotBoy Module
 
 ```
-make test
-```
-
-or
-
-```
-python3 test
+make test-init: Test Initialization
+make test-wrapper: Test _wrapper method
+make test-client: Test client methods
+make test-sequencer: Test Sequencer
 ```
