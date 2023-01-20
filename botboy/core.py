@@ -12,8 +12,11 @@ class BotBoy:
         params: list = [],
         verbose: bool = False,
     ):
-        self.setup(name, task, params)
+        self._name = name
+        self._task = task
+        self._params = params
         self._verbose = verbose
+        self._result = None
 
     def __str__(self):
         return f"Name: {self._name}\nTask: {self._task.__name__}\nParameters: {self._params}\nResult: {self._result}"
@@ -28,7 +31,7 @@ class BotBoy:
         if self._verbose:
             print(msg, end=end)
 
-    def _wrapper(self):
+    def _wrapper(self, *args):
         """Task wrapping, adds logging and error handling
 
         Raises:
@@ -38,7 +41,7 @@ class BotBoy:
             self._log(
                 f"{self._name} is executing task: {self._task.__name__}", end=", "
             )
-            self._result = self._task(*self._params)
+            self._result = self._task(*args)
         except Exception as e:
             print(
                 f"_wrapper failed to execute {self._task} with params {self._params}: {e}"
@@ -97,8 +100,6 @@ class BotBoy:
             self._task = task
         if params:
             self._params = params
-        # Reset result since new task was given
-        self._result = None
 
     # ------------------------------ Client Methods ------------------------------ #
 
@@ -114,12 +115,16 @@ class BotBoy:
         """
         try:
             if is_process:
-                process = multiprocessing.Process(target=self._wrapper, name=self._name)
+                process = multiprocessing.Process(
+                    target=self._wrapper, name=self._name, args=self._params
+                )
 
                 self._log(f"Running on process: {process}", end=", ")
                 process.run()
             else:
-                thread = threading.Thread(target=self._wrapper, name=self._name)
+                thread = threading.Thread(
+                    target=self._wrapper, name=self._name, args=self._params
+                )
 
                 self._log(f"Running on thread: {thread}", end=", ")
                 if wait:

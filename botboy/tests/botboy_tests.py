@@ -33,9 +33,18 @@ class BotBoyTests(unittest.TestCase):
     def test_wrapper(self):
         task = self.TASKS[0]
         name = "WrapperBot"
-        bot = BotBoy(name, task, True, [1, 2])
-        bot._wrapper()
+        bot = BotBoy(name, task, True)
+        bot._wrapper(1, 2)
         self.assertEqual(bot.result(), 3)
+
+        # No params
+        def log5():
+            print(5)
+            return 5
+
+        bot = BotBoy(name=name, task=log5)
+        bot._wrapper()
+        self.assertEqual(bot.result(), 5)
 
     def test_client(self):
         bot = BotBoy(name="ClientBot", verbose=True)
