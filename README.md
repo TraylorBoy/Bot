@@ -2,8 +2,6 @@
 Multithreading &amp; processing worker that executes functions and prints the
 result
 
-**Version 3 Release**
-
 ## Installation
 ```
 pip install botboy
@@ -12,7 +10,7 @@ pip install botboy
 ## Usage
 ### Instantiation
 ```
-from botboy import BotBoy
+from botboy.core import BotBoy
 
 name = 'Adder' # Name of thread/process
 task = lambda x, y: x + y # Function to run on separate thread/process
@@ -41,7 +39,6 @@ bot.silent()
 ```
 
 ### Execute task
-
 ```
 result = bot.execute()
 
@@ -64,7 +61,6 @@ print(bot)
 ```
 
 ### Store result in a file or provide a path
-
 ```
 # Store result in a file at current directory
 bot.save('test.txt')
@@ -76,7 +72,7 @@ bot.save(os.getcwd() + '/test2.txt')
 
 ### Run multiple tasks with Sequencer
 ```
-from botboy import BotBoy, Sequencer
+from botboy.core import BotBoy, Sequencer
 
 tasks = [lambda x, y: x + y, lambda x, y: x - y, lambda x, y: x * y]
 params = [[1, 2], [3, 4], [5, 6]]
@@ -92,9 +88,7 @@ results = seq()
 ```
 
 ## Test
-
 Runs the tests on the BotBoy Module
-
 ```
 make test-init: Test Initialization
 make test-wrapper: Test _wrapper method
