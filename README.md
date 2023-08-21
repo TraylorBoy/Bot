@@ -49,6 +49,12 @@ result = bot.execute(wait=True)
 result = bot.execute(is_process=True) # Wait does not work for process
 ```
 
+### Repeat Task
+```
+# Will repeat the assigned task amount of times with an interval inbetween
+results = bot.repeat(amt=2, interval=2, wait=True, is_process=False)
+```
+
 ### Getters
 ```
 print(bot.name())
