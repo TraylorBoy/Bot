@@ -75,6 +75,12 @@ class BotBoyTests(unittest.TestCase):
         self.assertEqual(results[1], -1)
         self.assertEqual(results[2], 2)
 
+        # Test repeat
+        results = bot.repeat(amt=2, interval=2, wait=True, is_process=False)
+
+        self.assertEqual(results[0], 2)
+        self.assertEqual(results[1], 2)
+
         # Test save
         bot.save("result.txt")
         path = os.getcwd() + "/result.txt"
@@ -84,7 +90,7 @@ class BotBoyTests(unittest.TestCase):
         params = [[1, 2], [3, 4], [5, 6]]
         bots = Sequencer.pack(tasks=self.TASKS, params=params, verbose=True)
         seq = Sequencer(bots)
-        results = seq()
+        results = seq(is_process=False)
         expected = [3, -1, 30]
 
         for i in range(len(results)):

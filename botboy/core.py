@@ -2,6 +2,7 @@
 
 import threading
 import multiprocessing
+import time
 
 
 class BotBoy:
@@ -103,6 +104,28 @@ class BotBoy:
 
     # ------------------------------ Client Methods ------------------------------ #
 
+    def repeat(self, amt: int, interval: int = 1, wait: bool = True, is_process: bool = False):
+        """Repeat the assigned task amount of times with interval inbetween
+
+        Args:
+            amt (int): Amount of times to repeat task
+            interval (int, optional): Wait time between reptitions. Defaults to 1.
+            wait (bool): Pause execution until task is finished running. Default is True.
+            is_process (bool): Run task on a separate process instead of thread. Default is False.
+
+        Returns:
+            List: Results
+        """
+
+        results = []
+
+        self._log(f"Repeating {self._task} {amt} times with an interval of {interval}")
+        for _ in range(0, amt):
+            results.append(self.execute(wait, is_process))
+            time.sleep(interval)
+
+        return results
+
     def execute(self, wait: bool = True, is_process: bool = False):
         """Runs the assigned task
 
@@ -171,10 +194,10 @@ class Sequencer:
     def __init__(self, bots: list):
         self._bots = bots
 
-    def __call__(self):
+    def __call__(self, is_process: bool = False):
         results = []
         for bot in self._bots:
-            results.append(bot.execute(wait=True))
+            results.append(bot.execute(wait=True, is_process=is_process))
         return results
 
     @classmethod
