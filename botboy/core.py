@@ -126,7 +126,6 @@ class BotBoy:
 
         return results
 
-
     def execute(self, wait: bool = True, is_process: bool = False):
         """Runs the assigned task
 
@@ -195,10 +194,10 @@ class Sequencer:
     def __init__(self, bots: list):
         self._bots = bots
 
-    def __call__(self):
+    def __call__(self, is_process: bool = False):
         results = []
         for bot in self._bots:
-            results.append(bot.execute(wait=True))
+            results.append(bot.execute(wait=True, is_process=is_process))
         return results
 
     @classmethod

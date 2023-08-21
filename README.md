@@ -90,7 +90,9 @@ bots = Sequencer.pack(tasks=tasks, params=params, verbose=True)
 seq = Sequencer(bots)
 
 # Retrieve results
-results = seq()
+# Default is false (runs tasks on threads)
+# Set to true to run each task on process
+results = seq(is_process=False)
 ```
 
 ## Test

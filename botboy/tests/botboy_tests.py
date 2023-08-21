@@ -90,7 +90,7 @@ class BotBoyTests(unittest.TestCase):
         params = [[1, 2], [3, 4], [5, 6]]
         bots = Sequencer.pack(tasks=self.TASKS, params=params, verbose=True)
         seq = Sequencer(bots)
-        results = seq()
+        results = seq(is_process=False)
         expected = [3, -1, 30]
 
         for i in range(len(results)):
